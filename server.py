@@ -33,6 +33,14 @@ def user_list():
     users = User.query.all()
     return render_template("user_list.html", users=users)
 
+@app.route('/users/<user_id>')
+def user_detail(user_id):
+    ratings = Rating.query.filter_by(user_id=user_id).all()
+    movie_titles = []
+    for rating in ratings:
+        movie_titles.append(rating.movie.title)
+    return render_template('user_details.html', movie_titles=movie_titles, ratings=ratings)
+
 @app.route('/register', methods=["GET"])
 def register_form():
     """Registration page for new users"""
