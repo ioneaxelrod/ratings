@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Movie Info</h2>
+
+<h3> Title: {{ movie.title }}</h3>
+
+<h3> Release Date: {{ movie.released_at.strftime('%B %d, %Y') }}</h3>
+
+{% if session.get('user_id') %}
+
+	<form action="/rate-movie" method="POST">
+		Rate this movie from 1 to 5!
+		<input type="hidden" name="movie_id" value="{{ movie.movie_id }}">
+		<input type="hidden" name="user_id" value="{{ session['user_id'] }} ">
+		<input type="number" name="rating" min="1" max="5">
+		<input type="submit" value="Set Rating">
+	</form>
+
+{% endif %}
+
+<h3> Ratings </h3>
+<ul>
+{% for rating in ratings %}
+    <li> User {{ rating.user_id }} gave this movie a score of: {{ rating.score }} </li>
+{% endfor %}
+</ul>
+{% endblock %}
+

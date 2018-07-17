@@ -41,13 +41,42 @@ def user_detail(user_id):
     movie_data = []
     for rating in ratings:
         movie_data.append((rating.movie.title, rating.score))
-    return render_template('user_details.html', movie_data=movie_data, user=user)
+    return render_template('user_details.html',
+                           movie_data=movie_data,
+                           user=user)
 
 
 @app.route('/movies')
 def movie_list():
     movies = Movie.query.order_by(Movie.title).all()
     return render_template('movie_list.html', movies=movies)
+
+
+@app.route('/movies/<movie_id>')
+def movie_detail(movie_id):
+    movie = Movie.query.filter_by(movie_id=movie_id).one()
+    ratings = Rating.query.filter_by(movie_id=movie_id).all()
+    return render_template('movie_details.html', movie=movie, ratings=ratings)
+
+
+@app.route('/rate-movie', methods=["POST"])
+def rate_movie():
+    score = request.form.get("rating")
+    user = request.form.get("user_id")
+    movie = request.form.get("movie_id")
+
+    try:
+        rating = Rating.query.filter(Rating.movie_id == movie, Rating.user_id == user).one()
+        rating.score = score
+        flash("Your rating has been updated!")
+    except NoResultFound:
+        rating = Rating(user_id=user, movie_id=movie, score=score)
+        print(rating)
+        db.session.add(rating)
+        flash("Your rating has been added!")
+    db.session.commit()
+
+    return redirect('/movies')
 
 
 @app.route('/register', methods=["GET"])
@@ -68,7 +97,6 @@ def register_process():
     else:
         # Make a new user
         new_user = User(email=email, password=password)
-        print(new_user)
         db.session.add(new_user)
         db.session.commit()
 
