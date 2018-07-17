@@ -36,7 +36,7 @@ def user_list():
 
 @app.route('/users/<user_id>')
 def user_detail(user_id):
-    ratings = Rating.query.filter_by(user_id=user_id).all()
+    ratings = Rating.query.filter_by(user_id=user_id)
     user = User.query.filter_by(user_id=user_id).one()
     movie_data = []
     for rating in ratings:
@@ -48,7 +48,7 @@ def user_detail(user_id):
 
 @app.route('/movies')
 def movie_list():
-    movies = Movie.query.order_by(Movie.title).all()
+    movies = Movie.query.order_by(Movie.title)
     return render_template('movie_list.html', movies=movies)
 
 
@@ -66,7 +66,10 @@ def rate_movie():
     movie = request.form.get("movie_id")
 
     try:
-        rating = Rating.query.filter(Rating.movie_id == movie, Rating.user_id == user).one()
+        rating = Rating.query.filter(
+            Rating.movie_id == movie,
+            Rating.user_id == user).one()
+
         rating.score = score
         flash("Your rating has been updated!")
     except NoResultFound:
@@ -132,7 +135,7 @@ def login_process():
 
 @app.route('/logout')
 def logout():
-    session.clear()
+    del session['user_id']
     flash("Logged out successfully")
 
     return redirect('/')
