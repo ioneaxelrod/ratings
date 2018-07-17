@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+
+  <h2>User Info</h2>
+
+<h3>Movies Rated </h3>
+{% for movie in movie_titles %}
+    {{ movie }}
+{% endfor %}
+
+{% endblock %}
