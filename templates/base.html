@@ -10,6 +10,16 @@
 	 {% endfor %}
 </ul>
   <h1>Ratings</h1>
+
+  {% if session.get('user_id') %}
+  <form action="/logout">
+		<input type="submit" value="Log Out">
+	</form>
+  {% else %}
+  <form action="/login">
+		<input type="submit" value="Log In">
+	</form>
+  {% endif %}
   <hr>
 
   {% block content %} put your content here {% endblock %}

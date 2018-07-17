@@ -4,6 +4,7 @@ from jinja2 import StrictUndefined
 
 from flask import (Flask, render_template, redirect, request, flash, session)
 from flask_debugtoolbar import DebugToolbarExtension
+from sqlalchemy.orm.exc import NoResultFound
 
 from model import connect_to_db, db, User, Rating, Movie
 
@@ -54,7 +55,38 @@ def register_process():
         db.session.add(new_user)
         db.session.commit()
 
-        flash("You have sucessfully registered!")
+        flash("You have successfully registered!")
+
+    return redirect('/')
+
+@app.route('/login')
+def login_form():
+    return render_template('login_form.html')
+
+
+@app.route('/login', methods=['POST'])
+def login_process():
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    try:
+        user = User.query.filter(User.email == email).one()
+    except NoResultFound:
+        flash("Email not registered!")
+        return redirect('/')
+
+    if user.password == password:
+        session['user_id'] = user.user_id
+        flash("User logged in!")
+    else:
+        flash("Incorrect password!")
+
+    return redirect('/')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash("Logged out successfully")
 
     return redirect('/')
 
