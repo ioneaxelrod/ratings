@@ -33,13 +33,22 @@ def user_list():
     users = User.query.all()
     return render_template("user_list.html", users=users)
 
+
 @app.route('/users/<user_id>')
 def user_detail(user_id):
     ratings = Rating.query.filter_by(user_id=user_id).all()
-    movie_titles = []
+    user = User.query.filter_by(user_id=user_id).one()
+    movie_data = []
     for rating in ratings:
-        movie_titles.append(rating.movie.title)
-    return render_template('user_details.html', movie_titles=movie_titles, ratings=ratings)
+        movie_data.append((rating.movie.title, rating.score))
+    return render_template('user_details.html', movie_data=movie_data, user=user)
+
+
+@app.route('/movies')
+def movie_list():
+    movies = Movie.query.order_by(Movie.title).all()
+    return render_template('movie_list.html', movies=movies)
+
 
 @app.route('/register', methods=["GET"])
 def register_form():
@@ -67,6 +76,7 @@ def register_process():
 
     return redirect('/')
 
+
 @app.route('/login')
 def login_form():
     return render_template('login_form.html')
@@ -86,10 +96,11 @@ def login_process():
     if user.password == password:
         session['user_id'] = user.user_id
         flash("User logged in!")
+        return redirect('/users/' + str(user.user_id))
     else:
         flash("Incorrect password!")
+        return redirect('/')
 
-    return redirect('/')
 
 @app.route('/logout')
 def logout():
