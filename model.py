@@ -46,6 +46,29 @@ class User(db.Model):
         else:
             return 0.0
 
+    def predict_rating(self, movie):
+
+        other_ratings = movie.ratings
+
+        similarities = [(self.similarity(rating.user), rating)
+                        for rating in other_ratings
+                        if self.similarity(rating.user) > 0]
+
+        similarities.sort(key=lambda x: x[0], reverse=True)
+
+        # numerator, denominator = 0, 0
+        # for sim, rating in similarities:
+        #     numerator += (sim * rating.score)
+        #     denominator += (sim)
+
+        if not similarities:
+            return None
+
+        numerator = sum([rating.score * sim for sim, rating in similarities])
+        denominator = sum([sim for sim, rating in similarities])
+
+        return numerator/denominator
+
 
 # Put your Movie and Rating model classes here.
 
@@ -118,3 +141,8 @@ if __name__ == "__main__":
     from server import app
     connect_to_db(app)
     print("Connected to DB.")
+
+    u = User.query.get(1)
+    m = Movie.query.get(300)
+    print(u.predict_rating(m))
+
