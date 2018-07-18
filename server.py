@@ -19,11 +19,18 @@ app.secret_key = "ABC"
 # error.
 app.jinja_env.undefined = StrictUndefined
 
+##############################################################################
+# Home Page
+
 
 @app.route('/')
 def index():
     """Homepage."""
     return render_template("homepage.html")
+
+
+##############################################################################
+# User Pages
 
 
 @app.route('/users')
@@ -44,6 +51,10 @@ def user_detail(user_id):
     return render_template('user_details.html',
                            movie_data=movie_data,
                            user=user)
+
+
+##############################################################################
+# Movie Pages
 
 
 @app.route('/movies')
@@ -80,6 +91,10 @@ def rate_movie():
     db.session.commit()
 
     return redirect('/movies')
+
+
+##############################################################################
+# Registration and Login Pages
 
 
 @app.route('/register', methods=["GET"])
@@ -139,6 +154,10 @@ def logout():
     flash("Logged out successfully")
 
     return redirect('/')
+
+
+##############################################################################
+# Main Function
 
 
 if __name__ == "__main__":
