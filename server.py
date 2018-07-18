@@ -65,9 +65,35 @@ def movie_list():
 
 @app.route('/movies/<movie_id>')
 def movie_detail(movie_id):
-    movie = Movie.query.filter_by(movie_id=movie_id).one()
+    movie = Movie.query.get(movie_id)
     ratings = Rating.query.filter_by(movie_id=movie_id).all()
-    return render_template('movie_details.html', movie=movie, ratings=ratings)
+
+    user_id = session.get("user_id")
+
+    if user_id:
+        user_rating = Rating.query.filter_by(
+            movie_id=movie_id, user_id=user_id).first()
+    else:
+        user_rating = None
+
+    rating_scores = [rating.score for rating in ratings]
+
+    avg_rating = round(sum(rating_scores) / len(rating_scores), 2)
+
+    prediction = None
+
+    if not user_rating and user_id:
+        user = User.query.get(user_id)
+        if user:
+            prediction = round(user.predict_rating(movie))
+
+    return render_template('movie_details.html',
+                           movie=movie,
+                           ratings=ratings,
+                           user_id=user_id,
+                           user_rating=user_rating,
+                           avg_rating=avg_rating,
+                           prediction=prediction)
 
 
 @app.route('/rate-movie', methods=["POST"])
@@ -90,7 +116,7 @@ def rate_movie():
         flash("Your rating has been added!")
     db.session.commit()
 
-    return redirect('/movies')
+    return redirect('/movies/' + movie)
 
 
 ##############################################################################

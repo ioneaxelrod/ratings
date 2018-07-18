@@ -7,9 +7,10 @@
 
 <h3> Release Date: {{ movie.released_at.strftime('%B %d, %Y') }}</h3>
 
-{% if session.get('user_id') %}
 
-	<form action="/rate-movie" method="POST">
+{% if user_id %}
+
+	<form action="/rate-movie/" method="POST">
 		Rate this movie from 1 to 5!
 		<input type="hidden" name="movie_id" value="{{ movie.movie_id }}">
 		<input type="hidden" name="user_id" value="{{ session['user_id'] }} ">
@@ -17,9 +18,17 @@
 		<input type="submit" value="Set Rating">
 	</form>
 
+	{% if prediction %}
+	<p> We predict you will rate this movie {{ prediction }}. </p>
+	{% else %}
+	<p> You rated this movie a {{ user_rating.score }}. </p>
+	{% endif %}
+
+
 {% endif %}
 
 <h3> Ratings </h3>
+<h4> The average rating is {{ avg_rating }}</h4>
 <ul>
 {% for rating in ratings %}
     <li> User {{ rating.user_id }} gave this movie a score of: {{ rating.score }} </li>
