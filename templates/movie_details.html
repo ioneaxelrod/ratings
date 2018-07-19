@@ -20,10 +20,17 @@
 
 	{% if prediction %}
 	<p> We predict you will rate this movie {{ prediction }}. </p>
+	{% elif not prediction and not user_rating %}
 	{% else %}
 	<p> You rated this movie a {{ user_rating.score }}. </p>
 	{% endif %}
 
+
+{% endif %}
+
+{% if beratement %}
+
+<h3 style="color:red"> " {{ beratement }} " - THE EVIL EYE </h3>
 
 {% endif %}
 
