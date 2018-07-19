@@ -33,8 +33,13 @@ class User(db.Model):
         user_ratings = {}
         paired_ratings = []
 
+        # Keys are the movie_id's for all ratings from self
+        # Values are the rating
+
         for rating in self.ratings:
             user_ratings[rating.movie_id] = rating
+
+        # Pair up self's rating of a unique movie with other's rating for it
 
         for rating in other.ratings:
             has_rated = user_ratings.get(rating.movie_id)
