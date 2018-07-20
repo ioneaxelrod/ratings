@@ -2,26 +2,29 @@
 <html>
 <head>
   <title>Ratings</title>
+  <link rel="stylesheet" href="/static/styles.css"/>
 </head>
 
 <body>
-<ul> {% for message in get_flashed_messages() %}
+<ul id="nav"> {% for message in get_flashed_messages() %}
 	<li>{{ message }}</li>
 	 {% endfor %}
 </ul>
   <h1>Ratings</h1>
 
+  <div id="nav"><center>
+    <a href="/movies">Movies | </a>
+    <a href="/users">Users | </a>
   {% if session.get('user_id') %}
-  <form action="/logout">
-		<input type="submit" value="Log Out">
-	</form>
+    <a href="/logout">Log Out</a>
   {% else %}
-  <!-- <form action="/login">
-		<input type="submit" value="Log In">
-	</form> -->
-
-  <a href="/login">Log In</a>
+    <a href="/login">Log In |</a>
+    <a href="/register">Register</a>
   {% endif %}
+  </center></div>
+
+
+
   <hr>
 
   {% block content %} put your content here {% endblock %}

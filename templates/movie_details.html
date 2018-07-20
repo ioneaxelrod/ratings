@@ -10,7 +10,7 @@
 
 {% if user_id %}
 
-	<form action="/rate-movie/" method="POST">
+	<form action="/rate-movie" method="POST">
 		Rate this movie from 1 to 5!
 		<input type="hidden" name="movie_id" value="{{ movie.movie_id }}">
 		<input type="hidden" name="user_id" value="{{ session['user_id'] }} ">

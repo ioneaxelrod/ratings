@@ -91,8 +91,10 @@ def movie_detail(movie_id):
         user = User.query.get(user_id)
         user_rating = Rating.query.filter_by(
             movie_id=movie_id, user_id=user_id).first()
-        effective_rating = user_rating
 
+        if user_rating:
+            effective_rating = user_rating.score 
+            
         if not user_rating:
             prediction = round(user.predict_rating(movie))
             effective_rating = prediction
@@ -252,7 +254,7 @@ def login_process():
 @app.route('/logout')
 def logout():
     """Log out of user session"""
-    
+
     del session['user_id']
     flash("Logged out successfully")
 

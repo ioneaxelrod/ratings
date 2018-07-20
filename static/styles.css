@@ -1,0 +1,16 @@
+/*This is the css!*/
+body {
+	background-color: darkslategrey;
+	color: white;
+	font-family: Georgia;
+}
+
+#nav {
+    list-style-type: none;
+    margin: 0;
+    padding: 100;
+}
+
+a {
+	color: grey;
+}
